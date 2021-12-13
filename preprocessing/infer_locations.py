@@ -24,26 +24,24 @@ geocoder = Geocoder(OSM('./osmgeocode/aachen.osm'))
 def parse_street_no(number):
     
     #handle street nos with letters in them by removing them (future potential for improvement!)
-    number = "".join([char for char in number if char.isdigit()])
+    separators = ["-", "/"]
+    number = "".join([char for char in number if (char.isdigit() or char in separators)])
     
     if len(number) == 0:
-        return
+        return None
+        
+    for sep in separators:
+        if sep in number:
+            try:
+                return [int(no) for no in number.split(sep)]
+            except ValueError:
+                return None
     
-    if "-" in number:
-        try:
-            return [int(no) for no in number.split("-")]
-        except ValueError:
-            return None
-    elif "/" in number:
-        try:
-            return [int(no) for no in number.split("/")]
-        except ValueError:
-            return None
-    else:
-        try:
-            return [int(number)]
-        except ValueError:
-            return None
+    #is only reached when number does not contain a separator
+    try:
+        return [int(number)]
+    except ValueError:
+        return None
     
 print("Parsing addresses...")
 location_descriptions = list(fines["location_description"])
@@ -79,7 +77,6 @@ for description in location_descriptions:
             major_part.append(component)
             
     street_name = ""
-    street_no = 0
             
     if relation == "number":
         street_name = " ".join(major_part)
