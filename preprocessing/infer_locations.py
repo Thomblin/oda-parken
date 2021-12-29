@@ -19,7 +19,7 @@ fines["location_description"] = fines["location_description"].astype(str)
 
 #initialize geocoder with aachen osm data
 print("Loading OSM data...")
-geocoder = Geocoder(OSM('./osmgeocode/aachen.osm'))
+geocoder = Geocoder(OSM('../data/aachen.osm'))
 
 def parse_street_no(number):
     
